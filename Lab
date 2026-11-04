@@ -1,0 +1,109 @@
+
+# Install Ansible
+sudo apt update
+sudo apt install ansible -y
+
+# Create the project directory
+mkdir ansible-roles
+cd ansible-roles
+
+# Create the three roles
+ansible-galaxy init prerequisites
+ansible-galaxy init postgresql
+ansible-galaxy init apache
+
+# Configure prerequisites role
+cat > prerequisites/tasks/main.yml <<'EOF'
+---
+- name: Install Git
+  become: yes
+  apt:
+    name: git
+    state: present
+EOF
+
+# Configure PostgreSQL role
+cat > postgresql/tasks/main.yml <<'EOF'
+---
+- name: Install PostgreSQL
+  become: yes
+  apt:
+    name: postgresql
+    state: present
+
+- name: Start PostgreSQL
+  become: yes
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+EOF
+
+# Configure Apache role
+cat > apache/tasks/main.yml <<'EOF'
+---
+- name: Install Apache
+  become: yes
+  apt:
+    name: apache2
+    state: present
+EOF
+
+# Create the main playbook
+cat > stack.yml <<'EOF'
+---
+- hosts: localhost
+  connection: local
+  become: yes
+  roles:
+    - prerequisites
+    - postgresql
+    - apache
+EOF
+
+# Execute the playbook
+ansible-playbook stack.yml --ask-become-pass
+
+# Verify installation
+git --version
+apache2 -v
+
+
+
+# Step 1: Install Docker
+sudo apt update
+sudo apt install docker.io -y
+
+# Step 2: Start Docker
+sudo systemctl enable --now docker
+
+# Step 3: Run Jenkins container
+sudo docker run -d --name jenkins \
+  -p 8080:8080 -p 50000:50000 \
+  jenkins/jenkins:lts
+
+# Step 4: Get Jenkins initial password
+sudo docker exec jenkins \
+  cat /var/jenkins_home/secrets/initialAdminPassword
+
+
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                bat 'echo Building'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat 'echo Testing'
+            }
+        }
+    }
+}
+
