@@ -1,0 +1,61 @@
+git clone https://github.com/cloudsimplus/cloudsimplus-examples.git
+./mvnw clean install
+
+mvn compile
+
+mvn exec:java -Dexec.mainClass="org.cloudsimplus.examples.BasicFirstExample"
+
+readlink -f $(which java)
+
+echo 'export JAVA_HOME=/usr/lib/jvm/java-25-openjdk-amd64' >> ~/.bashrc
+
+echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+
+echo $JAVA_HOME
+
+https://github.com/big-data-europe/docker-hadoop.git
+stop-all.sh
+sudo apt install docker docker-compose git
+sudo apt update && sudo apt install python3-setuptools -y
+sudo systemctl start docker
+sudo systemctl enable docker
+docker-compose up -d
+docker exec -it namenode bash
+hdfs dfs -mkdir -p /input
+echo "hello world hello hadoop" > sample.txt
+hdfs dfs -put sample.txt /input
+hadoop jar /opt/hadoop-3.2.1/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.1.jar wordcount /input /output
+hdfs dfs -cat /output/part-r-00000
+
+wget 'https://github.com/OpenNebula/minione/releases/latest/download/minione
+chmod +x minione
+./minione --version '7.4' --password 'OpenNebula2026!' --force --yes
+
+
+
+sudo apt update
+
+sudo apt install ca-certificates gnupg wget apt-transport-https
+
+sudo install -m 0755 -d /etc/apt/keyrings
+
+wget -qO- https://downloads.opennebula.io/repo/repo2.key | gpg --dearmor | sudo tee /etc/apt/keyrings/opennebula.gpg > /dev/null
+
+sudo chmod 0644 /etc/apt/keyrings/opennebula.gpg
+
+echo 'deb [signed-by=/etc/apt/keyrings/opennebula.gpg] https://downloads.opennebula.io/repo/7.2/Ubuntu/26.04 stable opennebula' | sudo tee /etc/apt/sources.list.d/opennebula.list > /dev/null
+
+sudo apt update
+
+sudo apt install opennebula opennebula-fireedge opennebula-flow opennebula-gate -y
+
+sudo systemctl start opennebula opennebula-fireedge
+
+
+gcloud init 
+gcloud config set project project-id
+gcloud app create
+gcloud app deploy
+gcloud app browse
+
