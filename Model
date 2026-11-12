@@ -1,19 +1,85 @@
+sudo apt update
+
+sudo apt install ca-certificates gupg wget apt-transport-https
+
+sudo install -m 0755 -d /etc/apt/keyrings
+
+wget -qO- https://downloads.opennebula.io/repo/repo2.key | gpg --dearmor | sudo tee /etc/apt/keyrings/opennebula.gpg > /dev/null
+
+sudo chmod 0644 /etc/apt/keyrings/opennebula.gpg
+
+echo 'deb [signed-by=/etc/apt/keyrings/opennebula.gpg] https://downloads.opennebula.io/repo/7.2/Ubuntu/24.04 stable opennebula' | sudo tee /etc/apt/sources.list.d/opennebula.list > /dev/null
+
+sudo apt update
+
+sudo apt install opennebula opennebula-fireedge opennebula-flow opennebula-gate -y
+
+sudo systemctl start opennebula opennebula-fireedge
+
+sudo cat /var/lib/one/.one/one_auth
 
 
-sudo apt update && sudo apt install openjdk-11-jdk -y
 
-export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
-export HADOOP_HOME=$HOME/Downloads/hadoop-3.4.2
-export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 
-hadoop version
 
-echo 'export HADOOP_HOME=$HOME/Downloads/hadoop-3.4.2' >> ~/.bashrc
-echo 'export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin' >> ~/.bashrc
-source ~/.bashrc
 
-echo "hello hadoop hello world hadoop" > input.txt
+from flask import Flask
 
-hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.4.2.jar wordcount input.txt output
+app = Flask(__name__)
 
-cat output/part-r-00000
+@app.route('/')
+def hello():
+    return "Hello!"
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+gcloud init
+
+gcloud config set project project-id
+
+gcloud app create
+
+gcloud app deploy
+
+gcloud app browse
+
+
+scp file.txt user@ip:/home/user
+
+sudo apt install docker.io
+sudo docker pull apache/hadoop:3.5.0
+sudo docker network create hadoop
+
+sudo docker run -it --name hadoop \
+  --hostname hadoop \
+  --network hadoop \
+  apache/hadoop:3.5.0 bash
+
+cd share/hadoop/mapreduce
+echo "hello world" > input.txt
+hadoop jar hadoop-mapreduce-examples-3.5.0.jar wordcount input.txt output
+
+
+# 1. Create project directory
+mkdir python-hello && cd python-hello
+
+# 2. Create Python program
+cat > app.py <<'EOF'
+print("Hello World from Python Docker!")
+EOF
+
+# 3. Create Dockerfile
+cat > Dockerfile <<'EOF'
+FROM python:3.12-alpine
+WORKDIR /app
+COPY app.py .
+CMD ["python", "app.py"]
+EOF
+
+# 4. Build custom Docker image
+docker build -t python-hello .
+
+# 5. Run container
+docker run --rm python-hello
