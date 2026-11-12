@@ -53,9 +53,13 @@ sudo apt install opennebula opennebula-fireedge opennebula-flow opennebula-gate 
 sudo systemctl start opennebula opennebula-fireedge
 
 
+sudo cat /var/lib/one/.one/one_auth
+
+
+
+
 gcloud init 
 gcloud config set project project-id
 gcloud app create
 gcloud app deploy
 gcloud app browse
-
